@@ -4,6 +4,7 @@ import { GeistMono } from "geist/font/mono";
 
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
+import Header from "@/components/header";
 
 export const metadata: Metadata = {
   title: "Huutokauppa",
@@ -20,9 +21,10 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          `${GeistSans.variable} ${GeistMono.variable}`
+          `${GeistSans.variable} ${GeistMono.variable}`,
         )}
       >
+        <Header />
         {children}
       </body>
     </html>

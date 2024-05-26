@@ -1,40 +1,23 @@
-import { revalidatePath } from "next/cache";
-
-import { auth } from "@/auth";
 import { database } from "@/db/database";
-import { items } from "@/db/schema";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { SignIn } from "@/components/sign-in";
-import { SignOut } from "@/components/sign-out";
 
 export default async function HomePage() {
-  const session = await auth();
-
   const allItems = await database.query.items.findMany();
 
   return (
-    <main className="container mx-auto px-[5%] py-12">
-      {session ? <SignOut /> : <SignIn />}
+    <main className="container mx-auto space-y-4 px-[5%] py-16">
+      <h1 className="mb-8 text-4xl font-semibold">Myytävät kohteet</h1>
 
-      <form
-        action={async (formData: FormData) => {
-          "use server";
-
-          await database.insert(items).values({
-            name: formData.get("name") as string,
-            userId: session?.user?.id!,
-          });
-          revalidatePath("/");
-        }}
-      >
-        <Input name="name" placeholder="Nimeä myytävä kohde..." />
-        <Button type="submit">Listaa myytäväksi</Button>
-      </form>
-
-      {allItems.map((item) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
+      <div className="grid grid-cols-4 gap-4">
+        {allItems.map((item) => (
+          <div
+            className="flex flex-col gap-2 rounded-lg border p-8"
+            key={item.id}
+          >
+            <div>Nimi: {item.name}</div>
+            <div>Aloitushinta: {item.startPrice}</div>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
