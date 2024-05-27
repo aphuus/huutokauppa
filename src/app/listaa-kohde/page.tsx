@@ -2,7 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createItemAction, createUploadUrlAction } from "./actions";
+import {
+  createItemAction,
+  createUploadUrlAction,
+} from "@/app/listaa-kohde/actions";
 
 export default function ListaaKohdePage() {
   return (

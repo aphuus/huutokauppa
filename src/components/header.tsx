@@ -20,9 +20,17 @@ export default async function Header() {
             <Logo className="h-8 w-8" />
             Huutokauppa
           </Link>
-          <Link href="/listaa-kohde">
-            <Button variant="link">Listaa kohde</Button>
-          </Link>
+          <div>
+            <Link href="/">
+              <Button variant="link">Kaikki kohteet</Button>
+            </Link>
+            <Link href="/listaa-kohde">
+              <Button variant="link">Listaa kohde</Button>
+            </Link>
+            <Link href="/omat-kohteet">
+              <Button variant="link">Omat kohteet</Button>
+            </Link>
+          </div>
         </div>
         <div className="flex items-center gap-6">
           <div>{session?.user?.name}</div>
