@@ -1,4 +1,5 @@
 import { database } from "@/db/database";
+import ItemCard from "@/components/item-card";
 
 export default async function HomePage() {
   const allItems = await database.query.items.findMany();
@@ -9,13 +10,7 @@ export default async function HomePage() {
 
       <div className="grid grid-cols-4 gap-4">
         {allItems.map((item) => (
-          <div
-            className="flex flex-col gap-2 rounded-lg border p-8"
-            key={item.id}
-          >
-            <div>Nimi: {item.name}</div>
-            <div>Aloitushinta: {item.startPrice}</div>
-          </div>
+          <ItemCard key={item.id} item={item} />
         ))}
       </div>
     </main>

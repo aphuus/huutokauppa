@@ -5,8 +5,21 @@ import { redirect } from "next/navigation";
 import { database } from "@/db/database";
 import { items } from "@/db/schema";
 import { auth } from "@/auth";
+import { getSignedUrlForS3Object } from "@/lib/s3";
 
-export default async function listaaKohdeAction(formData: FormData) {
+export async function createUploadUrlAction(key: string, type: string) {
+  return await getSignedUrlForS3Object(key, type);
+}
+
+export async function createItemAction({
+  fileName,
+  name,
+  startPrice,
+}: {
+  fileName: string;
+  name: string;
+  startPrice: number;
+}) {
   const session = await auth();
 
   if (!session) {
@@ -21,8 +34,9 @@ export default async function listaaKohdeAction(formData: FormData) {
 
   await database.insert(items).values({
     userId: user.id,
-    name: formData.get("name") as string,
-    startPrice: Number(formData.get("startPrice")),
+    name,
+    startPrice,
+    fileKey: fileName,
   });
 
   redirect("/");
