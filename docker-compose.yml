@@ -11,8 +11,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: s3cret123
 
+    # volumes:
+    #   - ./data/db:/var/lib/postgresql/data
+
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - postgres:/data/postgres
 
 volumes:
   postgres:
