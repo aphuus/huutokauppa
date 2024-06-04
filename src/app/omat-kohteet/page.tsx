@@ -20,7 +20,7 @@ export default async function OmatKohteetPage() {
   const hasItems = allItems.length > 0;
 
   return (
-    <main className="container mx-auto space-y-4 px-[5%] py-16">
+    <>
       <h1 className="mb-8 text-4xl font-semibold">Omat kohteet</h1>
 
       {hasItems ? (
@@ -32,6 +32,6 @@ export default async function OmatKohteetPage() {
       ) : (
         <EmptyState />
       )}
-    </main>
+    </>
   );
 }

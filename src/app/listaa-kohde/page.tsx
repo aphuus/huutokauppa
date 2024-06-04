@@ -9,7 +9,7 @@ import {
 
 export default function ListaaKohdePage() {
   return (
-    <main className="container mx-auto space-y-4 px-[5%] py-16">
+    <>
       <h1 className="mb-8 text-4xl font-semibold">Listaa kohde myytäväksi</h1>
       <form
         className="mb-8 flex max-w-lg flex-col gap-4 rounded-md border p-4 shadow-sm"
@@ -55,6 +55,6 @@ export default function ListaaKohdePage() {
           Listaa myytäväksi
         </Button>
       </form>
-    </main>
+    </>
   );
 }

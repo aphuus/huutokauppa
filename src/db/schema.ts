@@ -6,7 +6,6 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { FileKey } from "lucide-react";
 import { AdapterAccountType } from "next-auth/adapters";
 
 export const users = pgTable("user", {
@@ -75,6 +74,7 @@ export const items = pgTable("items", {
   name: text("name").notNull(),
   startPrice: integer("startPrice").notNull().default(0),
   fileKey: text("fileKey").notNull(),
+  bidInterval: integer("bidInterval").notNull().default(1),
 });
 
 export type Item = typeof items.$inferSelect;

@@ -5,10 +5,13 @@ import { getImageUrl } from "@/util/files";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 export default function ItemCard({ item }: { item: Item }) {
   return (
@@ -26,8 +29,13 @@ export default function ItemCard({ item }: { item: Item }) {
       </CardHeader>
       <CardContent>
         <CardTitle>{item.name}</CardTitle>
+        <CardDescription>Aloitushinta: {item.startPrice}€</CardDescription>
       </CardContent>
-      <CardFooter>Aloitushinta: {item.startPrice}€</CardFooter>
+      <CardFooter>
+        <Button asChild>
+          <Link href={`/kohteet/${item.id}`}>Tarjoa</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
