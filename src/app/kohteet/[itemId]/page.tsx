@@ -1,11 +1,8 @@
-import { eq } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { fi } from "date-fns/locale";
 
-import { database } from "@/db/database";
-import { items } from "@/db/schema";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -16,6 +13,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getImageUrl } from "@/util/files";
+import { createBidAction } from "./actions";
+import { getBidsForItem } from "@/data/bids";
+import { getItem } from "@/data/items";
 
 function formatTimestamp(timestamp: Date) {
   return formatDistance(timestamp, new Date(), {
@@ -29,9 +29,7 @@ export default async function KohdePage({
 }: {
   params: { itemId: string };
 }) {
-  const item = await database.query.items.findFirst({
-    where: eq(items.id, parseInt(itemId)),
-  });
+  const item = await getItem(parseInt(itemId));
 
   if (!item) {
     return (
@@ -54,30 +52,9 @@ export default async function KohdePage({
     );
   }
 
-  // const bids = [
-  //   {
-  //     id: 1,
-  //     amount: 100,
-  //     bidder: "Matti",
-  //     timestamp: new Date(),
-  //   },
-  //   {
-  //     id: 2,
-  //     amount: 200,
-  //     bidder: "Teppo",
-  //     timestamp: new Date(),
-  //   },
-  //   {
-  //     id: 3,
-  //     amount: 300,
-  //     bidder: "Maija",
-  //     timestamp: new Date(),
-  //   },
-  // ];
+  const allBids = await getBidsForItem(item.id);
 
-  const bids = [];
-
-  const hasBids = bids.length > 0;
+  const hasBids = allBids.length > 0;
 
   return (
     <>
@@ -113,13 +90,19 @@ export default async function KohdePage({
           <h2 className="mb-4 text-balance text-2xl font-semibold tracking-tight">
             Tämänhetkiset huudot
           </h2>
-          <p className="mb-2 text-lg">Tarjousväli: {item.bidInterval}</p>
+          <p className="mb-2 text-lg">Tarjousväli: {item.bidInterval} €</p>
           <p className="mb-4 text-lg">Aloitushinta: {item.startPrice} €</p>
+          <p className="mb-4 text-lg">
+            Tämänhetkinen hinta: {item.currentBid} €
+          </p>
+          <form className="mb-8" action={createBidAction.bind(null, item.id)}>
+            <Button>Tarjoa</Button>
+          </form>
           {hasBids ? (
             <ul>
-              {bids.map((bid) => (
+              {allBids.map((bid) => (
                 <div key={bid.id} className="flex justify-between space-y-2">
-                  <p>{bid.bidder}</p>
+                  <p>{bid.user.name}</p>
                   <p>{bid.amount} €</p>
                   <p>{formatTimestamp(bid.timestamp)}</p>
                 </div>
@@ -137,11 +120,11 @@ export default async function KohdePage({
                 alt="ei huutoja"
               />
               <p className="mb-8 max-w-sm text-balance">
-                Myytävällä kohteella ei ole yhtään huutoa. Ole ensimmäinen!
+                Myytävällä kohteella ei ole vielä huutoja. Ole ensimmäinen!
               </p>
-              <Button asChild>
-                <Link href="/">Huuda</Link>
-              </Button>
+              <form action={createBidAction.bind(null, item.id)}>
+                <Button>Tarjoa</Button>
+              </form>
             </div>
           )}
         </div>
