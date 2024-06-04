@@ -16,6 +16,7 @@ import { getImageUrl } from "@/util/files";
 import { createBidAction } from "./actions";
 import { getBidsForItem } from "@/data/bids";
 import { getItem } from "@/data/items";
+import { auth } from "@/auth";
 
 function formatTimestamp(timestamp: Date) {
   return formatDistance(timestamp, new Date(), {
@@ -30,6 +31,8 @@ export default async function KohdePage({
   params: { itemId: string };
 }) {
   const item = await getItem(parseInt(itemId));
+
+  const session = await auth();
 
   if (!item) {
     return (
@@ -55,6 +58,8 @@ export default async function KohdePage({
   const allBids = await getBidsForItem(item.id);
 
   const hasBids = allBids.length > 0;
+
+  const canPlaceBid = session && item.userId !== session.user.id;
 
   return (
     <>
@@ -95,9 +100,11 @@ export default async function KohdePage({
           <p className="mb-4 text-lg">
             Tämänhetkinen hinta: {item.currentBid} €
           </p>
-          <form className="mb-8" action={createBidAction.bind(null, item.id)}>
-            <Button>Tarjoa</Button>
-          </form>
+          {canPlaceBid && (
+            <form className="mb-8" action={createBidAction.bind(null, item.id)}>
+              <Button>Tarjoa</Button>
+            </form>
+          )}
           {hasBids ? (
             <ul>
               {allBids.map((bid) => (
@@ -122,9 +129,6 @@ export default async function KohdePage({
               <p className="mb-8 max-w-sm text-balance">
                 Myytävällä kohteella ei ole vielä huutoja. Ole ensimmäinen!
               </p>
-              <form action={createBidAction.bind(null, item.id)}>
-                <Button>Tarjoa</Button>
-              </form>
             </div>
           )}
         </div>

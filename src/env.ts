@@ -9,9 +9,12 @@ export const env = createEnv({
     CLOUDFLARE_ACCESS_KEY_ID: z.string().min(1),
     CLOUDFLARE_SECRET_ACCESS_KEY: z.string().min(1),
     CLOUDFLARE_BUCKET_NAME: z.string().min(1),
+    KNOCK_SECRET_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_CLOUDFLARE_R2_SUBDOMAIN: z.string().url(),
+    NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY: z.string().min(1),
+    NEXT_PUBLIC_KNOCK_FEED_ID: z.string().min(1),
   },
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -22,5 +25,9 @@ export const env = createEnv({
     CLOUDFLARE_BUCKET_NAME: process.env.CLOUDFLARE_BUCKET_NAME,
     NEXT_PUBLIC_CLOUDFLARE_R2_SUBDOMAIN:
       process.env.NEXT_PUBLIC_CLOUDFLARE_R2_SUBDOMAIN,
+    NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY:
+      process.env.NEXT_PUBLIC_KNOCK_PUBLIC_API_KEY,
+    NEXT_PUBLIC_KNOCK_FEED_ID: process.env.NEXT_PUBLIC_KNOCK_FEED_ID,
+    KNOCK_SECRET_KEY: process.env.KNOCK_SECRET_KEY,
   },
 });

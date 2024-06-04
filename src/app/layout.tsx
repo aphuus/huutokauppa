@@ -3,8 +3,11 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 
 import "@/app/globals.css";
+import "@knocklabs/react/dist/index.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
+import { AppKnockProviders } from "./knock-provider";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Huutokauppa",
@@ -24,10 +27,14 @@ export default function RootLayout({
           `${GeistSans.variable} ${GeistMono.variable}`,
         )}
       >
-        <Header />
-        <main className="container mx-auto space-y-4 px-[5%] py-16">
-          {children}
-        </main>
+        <SessionProvider>
+          <AppKnockProviders>
+            <Header />
+            <main className="container mx-auto space-y-4 px-[5%] py-16">
+              {children}
+            </main>
+          </AppKnockProviders>
+        </SessionProvider>
       </body>
     </html>
   );

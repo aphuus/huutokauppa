@@ -1,13 +1,23 @@
+"use client";
+
+import { useRef, useState } from "react";
 import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 
-import { auth } from "@/auth";
-import { SignIn } from "@/components/sign-in";
-import { SignOut } from "@/components/sign-out";
 import Logo from "@/components/logo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  NotificationFeedPopover,
+  NotificationIconButton,
+} from "@knocklabs/react";
 
-export default async function Header() {
-  const session = await auth();
+export default function Header() {
+  const [isVisible, setIsVisible] = useState(false);
+  const notifButtonRef = useRef(null);
+  const session = useSession();
+
+  const userId = session.data?.user.id;
 
   return (
     <header className="bg-accent py-4">
@@ -24,17 +34,55 @@ export default async function Header() {
             <Link href="/">
               <Button variant="link">Kaikki kohteet</Button>
             </Link>
-            <Link href="/listaa-kohde">
-              <Button variant="link">Listaa kohde</Button>
-            </Link>
-            <Link href="/omat-kohteet">
-              <Button variant="link">Omat kohteet</Button>
-            </Link>
+            {userId && (
+              <>
+                <Link href="/listaa-kohde">
+                  <Button variant="link">Listaa kohde</Button>
+                </Link>
+                <Link href="/omat-kohteet">
+                  <Button variant="link">Omat kohteet</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <div>{session?.user?.name}</div>
-          <div>{session ? <SignOut /> : <SignIn />}</div>
+          {userId && (
+            <>
+              <NotificationIconButton
+                ref={notifButtonRef}
+                onClick={(e) => setIsVisible(!isVisible)}
+              />
+              <NotificationFeedPopover
+                buttonRef={notifButtonRef}
+                isVisible={isVisible}
+                onClose={() => setIsVisible(false)}
+              />
+            </>
+          )}
+
+          {session.data?.user?.image && (
+            <Avatar>
+              <AvatarImage src={session.data?.user.image} />
+              <AvatarFallback>ACC</AvatarFallback>
+            </Avatar>
+          )}
+          <div>{session.data?.user.name}</div>
+          <div>
+            {userId ? (
+              <Button
+                onClick={() =>
+                  signOut({
+                    callbackUrl: "/",
+                  })
+                }
+              >
+                Kirjaudu ulos
+              </Button>
+            ) : (
+              <Button onClick={() => signIn()}>Kirjaudu sisään</Button>
+            )}
+          </div>
         </div>
       </div>
     </header>
