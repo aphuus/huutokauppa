@@ -17,6 +17,8 @@ import { createBidAction } from "./actions";
 import { getBidsForItem } from "@/data/bids";
 import { getItem } from "@/data/items";
 import { auth } from "@/auth";
+import { isBidOver } from "@/util/bids";
+import { Badge } from "@/components/ui/badge";
 
 function formatTimestamp(timestamp: Date) {
   return formatDistance(timestamp, new Date(), {
@@ -88,12 +90,21 @@ export default async function KohdePage({
           width={600}
           height={600}
           alt={item.name}
-          quality={90}
           priority
         />
         <div>
+          <Badge
+            className="mb-4"
+            variant={isBidOver(item) ? "destructive" : "success"}
+          >
+            {isBidOver(item)
+              ? "Huutokauppa sulkeutunut"
+              : "Huutokauppa käynnissä"}
+          </Badge>
           <h2 className="mb-4 text-balance text-2xl font-semibold tracking-tight">
-            Tämänhetkiset huudot
+            {isBidOver(item)
+              ? "Huutokauppa on päättynyt"
+              : `Sulkeutuu ${formatDistance(item.endDate, new Date(), { addSuffix: true, locale: fi })}`}
           </h2>
           <p className="mb-2 text-lg">Tarjousväli: {item.bidInterval} €</p>
           <p className="mb-4 text-lg">Aloitushinta: {item.startPrice} €</p>

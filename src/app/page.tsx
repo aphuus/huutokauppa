@@ -8,7 +8,7 @@ export default async function HomePage() {
     <>
       <h1 className="mb-8 text-4xl font-semibold">Myytävät kohteet</h1>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {allItems.map((item) => (
           <ItemCard key={item.id} item={item} />
         ))}

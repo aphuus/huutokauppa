@@ -15,10 +15,12 @@ export async function createItemAction({
   fileName,
   name,
   startPrice,
+  endDate,
 }: {
   fileName: string;
   name: string;
   startPrice: number;
+  endDate: Date;
 }) {
   const session = await auth();
 
@@ -33,10 +35,12 @@ export async function createItemAction({
   }
 
   await database.insert(items).values({
-    userId: user.id,
     name,
     startPrice,
     fileKey: fileName,
+    currentBid: startPrice,
+    userId: user.id,
+    endDate,
   });
 
   redirect("/");

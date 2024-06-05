@@ -8,6 +8,7 @@ import { database } from "@/db/database";
 import { bids, items } from "@/db/schema";
 import { Knock } from "@knocklabs/node";
 import { env } from "@/env";
+import { isBidOver } from "@/util/bids";
 
 const knock = new Knock(env.KNOCK_SECRET_KEY);
 
@@ -16,8 +17,8 @@ export async function createBidAction(itemId: number) {
 
   const userId = session?.user?.id;
 
-  if (!session || !session.user || !session.user.id) {
-    throw new Error("Unauthorized");
+  if (!userId) {
+    throw new Error("You must be logged in to place a bid");
   }
 
   const item = await database.query.items.findFirst({
@@ -28,15 +29,16 @@ export async function createBidAction(itemId: number) {
     throw new Error("Item not found");
   }
 
-  const latestBidValue =
-    item.startPrice === item.currentBid
-      ? item.startPrice
-      : item.currentBid + item.bidInterval;
+  if (isBidOver(item)) {
+    throw new Error("This auction is already over");
+  }
+
+  const latestBidValue = item.currentBid + item.bidInterval;
 
   await database.insert(bids).values({
     amount: latestBidValue,
-    itemId: itemId,
-    userId: session.user.id,
+    itemId,
+    userId,
     timestamp: new Date(),
   });
 
@@ -76,7 +78,7 @@ export async function createBidAction(itemId: number) {
   if (recipients.length > 0) {
     await knock.workflows.trigger("user-placed-bid", {
       actor: {
-        id: userId + "",
+        id: userId,
         name: session.user.name ?? "Anonymous",
         email: session.user.email,
         collection: "users",

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { SessionProvider, useSession } from "next-auth/react";
 
 import "@/app/globals.css";
-import "@knocklabs/react/dist/index.css";
 import { cn } from "@/lib/utils";
 import Header from "@/components/header";
-import { AppKnockProviders } from "./knock-provider";
-import { SessionProvider } from "next-auth/react";
+import { AppKnockProviders } from "./knock-providers";
 
 export const metadata: Metadata = {
   title: "Huutokauppa",
@@ -20,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fi" suppressHydrationWarning>
+    <html lang="fi">
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",

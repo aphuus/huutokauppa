@@ -6,8 +6,12 @@ import {
   createItemAction,
   createUploadUrlAction,
 } from "@/app/listaa-kohde/actions";
+import { DatePicker } from "@/components/date-picker";
+import React, { useState } from "react";
 
 export default function ListaaKohdePage() {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
   return (
     <>
       <h1 className="mb-8 text-4xl font-semibold">Listaa kohde myytäväksi</h1>
@@ -15,6 +19,11 @@ export default function ListaaKohdePage() {
         className="mb-8 flex max-w-lg flex-col gap-4 rounded-md border p-4 shadow-sm"
         onSubmit={async (e) => {
           e.preventDefault();
+
+          if (!date) {
+            return;
+          }
+
           const form = e.currentTarget;
           const formData = new FormData(form);
           const file = formData.get("file") as File;
@@ -33,6 +42,7 @@ export default function ListaaKohdePage() {
             name,
             startPrice,
             fileName: file.name,
+            endDate: date,
           });
         }}
       >
@@ -51,6 +61,7 @@ export default function ListaaKohdePage() {
           placeholder="Syötä aloitushinta..."
         />
         <Input required name="file" type="file" />
+        <DatePicker date={date} setDate={setDate} />
         <Button className="self-end" type="submit">
           Listaa myytäväksi
         </Button>
