@@ -8,6 +8,7 @@ import Logo from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
+  NotificationCell,
   NotificationFeedPopover,
   NotificationIconButton,
 } from "@knocklabs/react";
@@ -57,6 +58,19 @@ export default function Header() {
                 buttonRef={notifButtonRef}
                 isVisible={isVisible}
                 onClose={() => setIsVisible(false)}
+                renderItem={({ item, ...props }) => (
+                  <NotificationCell {...props} item={item}>
+                    <Link
+                      onClick={() => setIsVisible(false)}
+                      href={`/kohteet/${item.data?.itemId}`}
+                    >
+                      <p>
+                        {`Joku ylitti tarjouksesi kohteesta ${item.data?.itemName}`}
+                      </p>
+                      <p>{`Uusi tarjous: ${item.data?.bidAmount} €`}</p>
+                    </Link>
+                  </NotificationCell>
+                )}
               />
             </>
           )}
